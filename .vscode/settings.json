@@ -28,5 +28,7 @@
   "eslint.validate": [
     "javascript",
     "typescript"
-  ]
+  ],
+  "editor.formatOnPaste": true,
+  "editor.formatOnType": true
 }
