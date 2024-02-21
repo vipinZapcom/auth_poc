@@ -22,10 +22,10 @@ import {
 } from '../dtos/courses.dto';
 import {LoggingInterceptor} from '../interceptors/courses.interceptors';
 import {
+  createNewCourse,
   deleteCourseById,
   fetchAllCourses,
   fetchCourseById,
-  makeNewCourse,
   modifyCourseViaPatch as modifyCourse,
 } from '../services/courses.service';
 // This Controller deals with all the CRUD operations( Create Course, Update Course, Delete Course) related to Courses
@@ -310,7 +310,7 @@ export class CoursesController {
     })
     createNewCoursePayload: CreateNewCoursePayload,
   ) {
-    return await makeNewCourse(createNewCoursePayload);
+    return await createNewCourse(createNewCoursePayload);
   }
 
   /*

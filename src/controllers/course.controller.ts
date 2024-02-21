@@ -1,6 +1,8 @@
 // Uncomment these imports to begin using these cool features!
 
-import {get} from '@loopback/rest';
+import {get, response} from '@loopback/rest';
+import {Course} from '../dtos/courses.dto';
+import {fetchAllCourses} from '../services/courses.service';
 
 // import {inject} from '@loopback/core';
 
@@ -51,11 +53,11 @@ export class CourseController {
   })
   // This is the corresponding function that will handle the GET all posts request
   async getAllPosts(): Promise<{
-    data: (Post | undefined)[];
+    data: (Course | undefined)[];
     statusCode: number;
     isError: boolean;
     error: string;
   }> {
-    return await fetchAllPosts();
+    return await fetchAllCourses();
   }
 }
