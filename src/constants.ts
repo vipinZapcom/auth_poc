@@ -15,7 +15,7 @@ export const COURSE_ENDPOINTS = {
   },
   CREATE_NEW_COURSE: {
     PATH: '/courses',
-    METHOD_TYPE: 'COURSE',
+    METHOD_TYPE: 'POST',
   },
   UPDATE_COURSE_BY_ID: {
     PATH: '/courses/{courseId}',
@@ -32,6 +32,13 @@ export const COURSE_ENDPOINTS = {
 };
 
 export const COURSE_SUCCESS_RESPONSE_MESSAGES = {
-  coursesFetchedSuccessfully: 'all courses have been fetched successfully',
-  noCoursesFound: 'no course exists to be displayed',
+  COURSES_FETCHED_SUCCESSFULLY: 'all courses have been fetched successfully',
+  NO_COURSES_FOUND: 'no course exists to be displayed',
+};
+
+export const USER_ENDPOINTS = {
+  CREATE_NEW_USER: {
+    PATH: '/signup',
+    METHOD_TYPE: 'POST',
+  },
 };

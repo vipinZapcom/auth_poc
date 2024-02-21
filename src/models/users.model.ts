@@ -11,4 +11,4 @@ const usersSchema = new Schema({
   lastName: {type: String, required: true},
   email: {type: String, required: true},
 });
-export const Courses = mongoose.model('Users', usersSchema);
+export const Users = mongoose.model('Users', usersSchema);

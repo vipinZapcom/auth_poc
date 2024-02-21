@@ -38,7 +38,7 @@ export async function fetchAllCourses(): Promise<{
         null,
         httpStatus.NOT_FOUND,
         false,
-        COURSE_SUCCESS_RESPONSE_MESSAGES.noCoursesFound,
+        COURSE_SUCCESS_RESPONSE_MESSAGES.NO_COURSES_FOUND,
         [],
       );
     }
@@ -46,7 +46,7 @@ export async function fetchAllCourses(): Promise<{
       null,
       httpStatus.OK,
       false,
-      COURSE_SUCCESS_RESPONSE_MESSAGES.coursesFetchedSuccessfully,
+      COURSE_SUCCESS_RESPONSE_MESSAGES.COURSES_FETCHED_SUCCESSFULLY,
       allCourses,
     );
   } catch (error) {
@@ -93,7 +93,7 @@ export async function fetchCourseById(id: number): Promise<{
 /**
  * Creates a new course.
  */
-export async function makeNewCourse(
+export async function createNewCourse(
   createNewCoursePayload: CreateNewCoursePayload,
 ) {
   try {
