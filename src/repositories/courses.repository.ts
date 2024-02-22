@@ -7,21 +7,17 @@ import {Courses} from '../models/courses.model';
  * Fetches all courses from the database.
  */
 export async function fetchAllCoursesDb(): Promise<
-  (Document<
+  Document<
     unknown,
     {},
     {
       id: number;
       title: string;
       description: string;
+    } & {
+      _id: Types.ObjectId;
     }
-  > & {
-    id: number;
-    title: string;
-    description: string;
-  } & {
-    _id: Types.ObjectId;
-  })[]
+  >[]
 > {
   try {
     return await Courses.find();

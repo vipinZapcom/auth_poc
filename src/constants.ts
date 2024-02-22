@@ -5,30 +5,12 @@ interacting with a server's API. Each endpoint is represented by a key-value
 pair, where the key is the name of the endpoint and the value is an object
 containing the `PATH` and `METHOD_TYPE` properties. */
 export const COURSE_ENDPOINTS = {
-  GET_ALL_COURSES: {
-    PATH: '/courses',
-    METHOD_TYPE: 'GET',
-  },
-  GET_COURSE_BY_ID: {
-    PATH: '/courses/{courseId}',
-    METHOD_TYPE: 'GET',
-  },
-  CREATE_NEW_COURSE: {
-    PATH: '/courses',
-    METHOD_TYPE: 'POST',
-  },
-  UPDATE_COURSE_BY_ID: {
-    PATH: '/courses/{courseId}',
-    METHOD_TYPE: 'PATCH',
-  },
-  REPLACE_COURSE_BY_ID: {
-    PATH: '/courses/{courseId}',
-    METHOD_TYPE: 'PUT',
-  },
-  DELETE_COURSE_BY_ID: {
-    PATH: '/courses/{courseId}',
-    METHOD_TYPE: 'DELETE',
-  },
+  GET_ALL_COURSES: '/courses',
+  GET_COURSE_BY_ID: '/courses/{courseId}',
+  CREATE_NEW_COURSE: '/courses',
+  UPDATE_COURSE_BY_ID: '/courses/{courseId}',
+  REPLACE_COURSE_BY_ID: '/courses/{courseId}',
+  DELETE_COURSE_BY_ID: '/courses/{courseId}',
 };
 
 export const COURSE_SUCCESS_RESPONSE_MESSAGES = {
@@ -37,8 +19,8 @@ export const COURSE_SUCCESS_RESPONSE_MESSAGES = {
 };
 
 export const USER_ENDPOINTS = {
-  CREATE_NEW_USER: {
-    PATH: '/signup',
-    METHOD_TYPE: 'POST',
-  },
+  CREATE_USER: '/signup',
+  LOGIN_USER: '/login',
 };
+
+export const JSON_SECRET_KEY = 'LEARNING_LOOPBACK';
