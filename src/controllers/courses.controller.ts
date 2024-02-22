@@ -32,7 +32,7 @@ import {
 export class CoursesController {
   constructor() {}
   // This controller `GET /courses` will handle the request when we want all the courses present in our database
-  @get(COURSE_ENDPOINTS.GET_ALL_COURSES.PATH)
+  @get(COURSE_ENDPOINTS.GET_ALL_COURSES)
   @response(200, {
     description: 'Success',
     content: {
@@ -126,7 +126,7 @@ export class CoursesController {
   /*This controller `GET /courses/{courseId}` will handle the request when we want the course with the given courseId like /courses/1
     will provide me the course content having the id as 1
    */
-  @get(COURSE_ENDPOINTS.GET_COURSE_BY_ID.PATH)
+  @get(COURSE_ENDPOINTS.GET_COURSE_BY_ID)
   @response(200, {
     description: 'Success',
     headers: {
@@ -208,7 +208,7 @@ export class CoursesController {
   This controller `COURSE /courses` will deal with creating the new course and if the course exists in the database then it will
   give us error
   */
-  @post(COURSE_ENDPOINTS.CREATE_NEW_COURSE.PATH)
+  @post(COURSE_ENDPOINTS.CREATE_NEW_COURSE)
   @response(201, {
     description: 'Created',
     headers: {
@@ -317,7 +317,7 @@ export class CoursesController {
    This controller `PATCH /courses/{courseId}` will deal with all the request which corresponds to updating the course title and body
    for the courseId which will be passed in the url
   */
-  @patch(COURSE_ENDPOINTS.UPDATE_COURSE_BY_ID.PATH)
+  @patch(COURSE_ENDPOINTS.UPDATE_COURSE_BY_ID)
   @response(200, {
     description: 'Success',
     headers: {
@@ -422,7 +422,7 @@ export class CoursesController {
    id, title, body and userId.
    Note: We should pass the same courseId (in the url) and id( in the request body) for the function to work.
   */
-  @put(COURSE_ENDPOINTS.REPLACE_COURSE_BY_ID.PATH)
+  @put(COURSE_ENDPOINTS.REPLACE_COURSE_BY_ID)
   @response(200, {
     description: 'Success',
     headers: {
@@ -520,7 +520,7 @@ export class CoursesController {
   /*
   This controller `DEL /courses/{courseId}` will delete the corresponding course having the courseId which is passed in the url
   */
-  @del(COURSE_ENDPOINTS.DELETE_COURSE_BY_ID.PATH)
+  @del(COURSE_ENDPOINTS.DELETE_COURSE_BY_ID)
   @response(204, {
     description: 'No Content',
     headers: {

@@ -30,7 +30,9 @@ export async function validateRequestBody(
   });
   let errorMessage: string = '';
   if (error && Object.keys(error).length) {
-    errorMessage = error.details.map(detail => detail.message).join(', ');
+    errorMessage = error.details
+      .map((detail: {message: any}) => detail.message)
+      .join(', ');
   }
   if (!errorMessage.length) {
     return;

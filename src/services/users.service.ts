@@ -47,6 +47,25 @@ export async function createNewUser(
   }
 }
 
+/*
+Check if user exists.
+*/
+
+export async function checkIfUserExists(
+  createNewUserPayload: CreateNewUserPayload,
+) {
+  try {
+    const isUserExists = await checkIfTheUserExistsDb(createNewUserPayload);
+    if (isUserExists && isUserExists._id) {
+      return true;
+    }
+    return false;
+  } catch (error) {
+    console.log('Failed to fetch the user.');
+    return false;
+  }
+}
+
 // /**
 //  * Fetches all users from the database.
 //  */
