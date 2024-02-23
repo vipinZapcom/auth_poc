@@ -24,3 +24,4 @@ export const USER_ENDPOINTS = {
 };
 
 export const JSON_SECRET_KEY = 'LEARNING_LOOPBACK';
+export const SALT = 10;

@@ -1,5 +1,5 @@
 import {Document, Types} from 'mongoose';
-import {CreateNewUserPayload} from '../dtos/users.dto';
+import {CreateNewUserPayload, UserExistsPayload} from '../dtos/users.dto';
 import {Users} from '../models/users.model';
 
 /**
@@ -86,7 +86,7 @@ export async function createNewUserObjectDb(
  * Checks if a user with the given payload exists in the database.
  */
 export async function checkIfTheUserExistsDb(
-  createNewUserPayload: CreateNewUserPayload,
+  createNewUserPayload: UserExistsPayload,
 ): Promise<{
   _id: Types.ObjectId;
 } | null> {
