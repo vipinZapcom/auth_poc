@@ -23,5 +23,9 @@ export const USER_ENDPOINTS = {
   LOGIN_USER: '/login',
 };
 
+export const USER_RESPOSE_MESSAGES = {
+  UNAUTHORISED_USER: 'Unable to find this user',
+};
+
 export const JSON_SECRET_KEY = 'LEARNING_LOOPBACK';
 export const SALT = 10;

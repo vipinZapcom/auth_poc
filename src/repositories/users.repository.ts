@@ -32,30 +32,44 @@ import {Users} from '../models/users.model';
 /**
  * Fetches a user by its ID from the database.
  */
-// export async function fetchUserByIdDb(id: number): Promise<
-//   | (Document<
-//       unknown,
-//       {},
-//       {
-//         id: number;
-//         title: string;
-//         description: string;
-//       }
-//     > & {
-//       id: number;
-//       title: string;
-//       description: string;
-//     } & {
-//       _id: Types.ObjectId;
-//     })
-//   | null
-// > {
-//   try {
-//     return await Users.findOne({id});
-//   } catch (error) {
-//     throw error;
-//   }
-// }
+export async function fetchUserByIdDb(id: number): Promise<Document<
+  unknown,
+  {},
+  {
+    id: number;
+    title: string;
+    description: string;
+  } & {
+    _id: Types.ObjectId;
+  }
+> | null> {
+  try {
+    return await Users.findOne({id});
+  } catch (error) {
+    throw error;
+  }
+}
+
+/**
+ * Fetches a user by its ID from the database.
+ */
+export async function fetchUserByEmailDB(email: string): Promise<Document<
+  unknown,
+  {},
+  {
+    id: number;
+    title: string;
+    description: string;
+  } & {
+    _id: Types.ObjectId;
+  }
+> | null> {
+  try {
+    return await Users.findOne({email});
+  } catch (error) {
+    throw error;
+  }
+}
 
 /**
  * Counts all users in the database.

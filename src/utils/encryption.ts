@@ -8,20 +8,14 @@ export function createHashedPassword(password: string): string {
   return hash;
 }
 
-export function verifyPassword(
+export async function verifyPassword(
   currentPassword: string,
   hasdPasswordFromDB: string,
 ) {
-  bcrypt.compare(
-    currentPassword,
-    hasdPasswordFromDB,
-    function (err: Error, result: boolean) {
-      if (err) {
-        console.log(err);
-        return false;
-      }
-      return result;
-      // result == true
-    },
-  );
+  const match = await bcrypt.compare(currentPassword, hasdPasswordFromDB);
+
+  if (match) {
+    return true;
+  }
+  return false;
 }

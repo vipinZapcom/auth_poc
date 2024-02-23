@@ -1,4 +1,3 @@
-import * as _ from 'lodash';
 export type User = {
   id: number;
   firstName: string;
@@ -7,9 +6,9 @@ export type User = {
   password: string;
 };
 
-export type CreateNewUserPayload = _.Omit<User, 'id'>;
-export type UserExistsPayload = _.Omit<CreateNewUserPayload, 'password'>;
-export type LoginPayload = _.Omit<User, 'password'>;
+export type CreateNewUserPayload = Omit<User, 'id'>;
+export type UserExistsPayload = Omit<CreateNewUserPayload, 'password'>;
+export type LoginPayload = Pick<User, 'email' | 'password'>;
 
 // export type PutUserPayload = User;
 
