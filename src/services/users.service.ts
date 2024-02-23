@@ -1,10 +1,12 @@
-import {CreateNewUserPayload} from '../dtos/users.dto';
+import * as _ from 'lodash';
+import {CreateNewUserPayload, LoginPayload, UserExistsPayload} from '../dtos/users.dto';
 import {
   checkIfTheUserExistsDb,
   countAllUsersDb,
   createNewUserObjectDb,
   saveNewUserDb,
 } from '../repositories/users.repository';
+import {createHashedPassword} from '../utils/encryption';
 
 /**
  * Creates a new user.
@@ -13,12 +15,10 @@ export async function createNewUser(
   createNewUserPayload: CreateNewUserPayload,
 ) {
   try {
-    const usersCount = await countAllUsersDb();
-    const newUser = await createNewUserObjectDb(
-      createNewUserPayload,
-      usersCount + 1,
-    );
-    const isUserExists = await checkIfTheUserExistsDb(createNewUserPayload);
+    const password = createNewUserPayload.password;
+    const userExistPayload:UserExistsPayload = _.omit(createNewUserPayload, 'password');
+
+    const isUserExists = await checkIfTheUserExistsDb(userExistPayload);
     if (isUserExists && isUserExists._id) {
       return {
         data: [],
@@ -27,6 +27,13 @@ export async function createNewUser(
         statusCode: 200,
       };
     }
+    const hasdPassword = createHashedPassword(password);
+    const usersCount = await countAllUsersDb();
+    createNewUserPayload.password = hasdPassword;
+    const newUser = await createNewUserObjectDb(
+      createNewUserPayload,
+      usersCount + 1,
+    );
     const createdUserResponseDb = await saveNewUserDb(newUser);
     if (createdUserResponseDb) {
       return {
@@ -51,11 +58,9 @@ export async function createNewUser(
 Check if user exists.
 */
 
-export async function checkIfUserExists(
-  createNewUserPayload: CreateNewUserPayload,
-) {
+export async function checkIfUserExists(loginPayload: LoginPayload) {
   try {
-    const isUserExists = await checkIfTheUserExistsDb(createNewUserPayload);
+    const isUserExists = await checkIfTheUserExistsDb(loginPayload);
     if (isUserExists && isUserExists._id) {
       return true;
     }

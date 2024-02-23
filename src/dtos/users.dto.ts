@@ -8,6 +8,7 @@ export type User = {
 };
 
 export type CreateNewUserPayload = _.Omit<User, 'id'>;
+export type UserExistsPayload = _.Omit<CreateNewUserPayload, 'password'>;
 export type LoginPayload = _.Omit<User, 'password'>;
 
 // export type PutUserPayload = User;

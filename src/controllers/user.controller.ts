@@ -35,6 +35,11 @@ export class UserController {
                 description: 'required Field',
                 example: 'alpha@gmail.com',
               },
+              password: {
+                type: 'string',
+                description: 'required Field',
+                example: 'password',
+              },
             },
           },
         },
