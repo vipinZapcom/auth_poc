@@ -3,10 +3,11 @@
 import {post, requestBody} from '@loopback/rest';
 import httpStatus from 'http-status-codes';
 import {generateToken} from '../authentication/authentication';
-import {USER_ENDPOINTS} from '../constants';
+import {USER_ENDPOINTS, USER_RESPOSE_MESSAGES} from '../constants';
 import {CreateNewUserPayload, LoginPayload} from '../dtos/users.dto';
-import {checkIfUserExists, createNewUser} from '../services/users.service';
+import {createNewUser, fetchUserByEmail} from '../services/users.service';
 import {createResponseObject} from '../utils/common.service';
+import {verifyPassword} from '../utils/encryption';
 // import {inject} from '@loopback/core';
 
 export class UserController {
@@ -85,11 +86,29 @@ export class UserController {
     })
     loginPayload: LoginPayload,
   ) {
-    if (await checkIfUserExists(loginPayload)) {
+    // fech user by id
+    const response = await fetchUserByEmail(loginPayload.email);
+    console.log(`response`);
+    console.log(response);
+
+    // user user is returened user hashed password for verification of token
+    const verified = await verifyPassword(
+      loginPayload.password,
+      response?.data?.password,
+    );
+    // generate token and return
+    if (verified) {
       const token = await generateToken(loginPayload);
-      return await createResponseObject(false, httpStatus.OK, false, '', {
+      return await createResponseObject('', httpStatus.OK, false, '', {
         token: token,
       });
     }
+    return await createResponseObject(
+      USER_RESPOSE_MESSAGES.UNAUTHORISED_USER,
+      httpStatus.FORBIDDEN,
+      true,
+      '',
+      null,
+    );
   }
 }

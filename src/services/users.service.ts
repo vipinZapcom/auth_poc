@@ -1,9 +1,11 @@
 import * as _ from 'lodash';
-import {CreateNewUserPayload, LoginPayload, UserExistsPayload} from '../dtos/users.dto';
+import {CreateNewUserPayload, UserExistsPayload} from '../dtos/users.dto';
 import {
   checkIfTheUserExistsDb,
   countAllUsersDb,
   createNewUserObjectDb,
+  fetchUserByEmailDB,
+  fetchUserByIdDb,
   saveNewUserDb,
 } from '../repositories/users.repository';
 import {createHashedPassword} from '../utils/encryption';
@@ -16,7 +18,10 @@ export async function createNewUser(
 ) {
   try {
     const password = createNewUserPayload.password;
-    const userExistPayload:UserExistsPayload = _.omit(createNewUserPayload, 'password');
+    const userExistPayload: UserExistsPayload = _.omit(
+      createNewUserPayload,
+      'password',
+    );
 
     const isUserExists = await checkIfTheUserExistsDb(userExistPayload);
     if (isUserExists && isUserExists._id) {
@@ -58,9 +63,9 @@ export async function createNewUser(
 Check if user exists.
 */
 
-export async function checkIfUserExists(loginPayload: LoginPayload) {
+export async function checkIfUserExists(userExistsPayload: UserExistsPayload) {
   try {
-    const isUserExists = await checkIfTheUserExistsDb(loginPayload);
+    const isUserExists = await checkIfTheUserExistsDb(userExistsPayload);
     if (isUserExists && isUserExists._id) {
       return true;
     }
@@ -68,6 +73,64 @@ export async function checkIfUserExists(loginPayload: LoginPayload) {
   } catch (error) {
     console.log('Failed to fetch the user.');
     return false;
+  }
+}
+
+/**
+ * Fetches a user by its emai from the database.
+ */
+export async function fetchUserByEmail(email: string): Promise<{
+  error: string | null;
+  isError: boolean;
+  data: any;
+  statusCode: number;
+}> {
+  try {
+    const user = await fetchUserByEmailDB(email);
+    return {
+      error: user ? null : `user having id ${email} doesn't exists`,
+      isError: false,
+      data: user ? user : [],
+      statusCode: user ? 200 : 404,
+    };
+  } catch (error) {
+    console.error('Failed fetching the users', error);
+    return {
+      error: 'Failed fetching the users',
+      statusCode: 500,
+      isError: true,
+      data: [],
+    };
+  }
+}
+
+/**
+ * Fetches a user by its ID from the database.
+ */
+export async function fetchUserById(id: number): Promise<{
+  error: string | null;
+  isError: boolean;
+  data: any;
+  statusCode: number;
+}> {
+  try {
+    const userHavingTheGivenId = await fetchUserByIdDb(id);
+    return {
+      error: userHavingTheGivenId
+        ? null
+        : `user having id ${id} doesn't exists`,
+      isError: false,
+      data: userHavingTheGivenId ? userHavingTheGivenId : [],
+      statusCode: userHavingTheGivenId ? 200 : 404,
+    };
+  } catch (error) {
+    console.error('Failed fetching the users', error);
+    return {
+      error: 'Failed fetching the users',
+      statusCode: 500,
+      isError: true,
+      data: [],
+    };
   }
 }
 
@@ -100,36 +163,6 @@ export async function checkIfUserExists(loginPayload: LoginPayload) {
 //       USER_SUCCESS_RESPONSE_MESSAGES.usersFetchedSuccessfully,
 //       allUsers,
 //     );
-//   } catch (error) {
-//     console.error('Failed fetching the users', error);
-//     return {
-//       error: 'Failed fetching the users',
-//       statusCode: 500,
-//       isError: true,
-//       data: [],
-//     };
-//   }
-// }
-
-// /**
-//  * Fetches a user by its ID from the database.
-//  */
-// export async function fetchUserById(id: number): Promise<{
-//   error: string | null;
-//   isError: boolean;
-//   data: any;
-//   statusCode: number;
-// }> {
-//   try {
-//     const userHavingTheGivenId = await fetchUserByIdDb(id);
-//     return {
-//       error: userHavingTheGivenId
-//         ? null
-//         : `user having id ${id} doesn't exists`,
-//       isError: false,
-//       data: userHavingTheGivenId ? userHavingTheGivenId : [],
-//       statusCode: userHavingTheGivenId ? 200 : 404,
-//     };
 //   } catch (error) {
 //     console.error('Failed fetching the users', error);
 //     return {
