@@ -1,5 +1,8 @@
 import {Document, Types} from 'mongoose';
-import {CreateNewUserPayload, UserExistsPayload} from '../dtos/users.dto';
+import {
+  CreateNewUserPayloadWithUserRole,
+  UserExistsPayload,
+} from '../dtos/users.dto';
 import {Users} from '../models/users.model';
 
 /**
@@ -86,7 +89,7 @@ export async function countAllUsersDb(): Promise<number> {
  * Creates a new user object.
  */
 export async function createNewUserObjectDb(
-  createNewUserPayload: CreateNewUserPayload,
+  createNewUserPayload: CreateNewUserPayloadWithUserRole,
   id: number,
 ) {
   try {

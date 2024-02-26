@@ -98,7 +98,7 @@ export class UserController {
     );
     // generate token and return
     if (verified) {
-      const token = await generateToken(loginPayload);
+      const token = await generateToken(response?.data);
       return await createResponseObject('', httpStatus.OK, false, '', {
         token: token,
       });
