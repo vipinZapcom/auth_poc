@@ -21,6 +21,7 @@ import {
   PutCoursePayload,
 } from '../dtos/courses.dto';
 import {LoggingInterceptor} from '../interceptors/courses.interceptors';
+import {UserInterceptor} from '../interceptors/users.interceptors';
 import {
   createNewCourse,
   deleteCourseById,
@@ -279,7 +280,10 @@ export class CoursesController {
       },
     },
   })
-  @intercept(new LoggingInterceptor().createCourseInterceptor)
+  @intercept(
+    new UserInterceptor().checkCreateRights,
+    new LoggingInterceptor().createCourseInterceptor,
+  )
   // This is the corresponding function that will deal with the creation of new course
   async createNewCourse(
     @requestBody({

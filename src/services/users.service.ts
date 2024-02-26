@@ -1,5 +1,9 @@
 import * as _ from 'lodash';
-import {CreateNewUserPayload, UserExistsPayload} from '../dtos/users.dto';
+import {
+  CreateNewUserPayload,
+  CreateNewUserPayloadWithUserRole,
+  UserExistsPayload,
+} from '../dtos/users.dto';
 import {
   checkIfTheUserExistsDb,
   countAllUsersDb,
@@ -34,9 +38,18 @@ export async function createNewUser(
     }
     const hasdPassword = createHashedPassword(password);
     const usersCount = await countAllUsersDb();
-    createNewUserPayload.password = hasdPassword;
+    // createNewUserPayload.password = hasdPassword;
+    const {firstName, lastName, email} = createNewUserPayload;
+    const createNewUserPayloadWithUserRole: CreateNewUserPayloadWithUserRole = {
+      firstName,
+      lastName,
+      email,
+      password: hasdPassword,
+      role: 'readOnly',
+    };
+    // createNewUserPayloadWithUserRole.role = 'readOnly';
     const newUser = await createNewUserObjectDb(
-      createNewUserPayload,
+      createNewUserPayloadWithUserRole,
       usersCount + 1,
     );
     const createdUserResponseDb = await saveNewUserDb(newUser);

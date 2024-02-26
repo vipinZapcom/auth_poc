@@ -7,8 +7,17 @@ export type User = {
 };
 
 export type CreateNewUserPayload = Omit<User, 'id'>;
+export type CreateNewUserPayloadWithUserRole = CreateNewUserPayload & {
+  role: string;
+};
 export type UserExistsPayload = Omit<CreateNewUserPayload, 'password'>;
 export type LoginPayload = Pick<User, 'email' | 'password'>;
+export type generateTokenUserPayload = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  role: string;
+};
 
 // export type PutUserPayload = User;
 
