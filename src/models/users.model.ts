@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
+import {} from '../dtos/users.dto';
 
 const {Schema} = mongoose;
-
 /* The code is defining a schema for a collection of users in a MongoDB database
 using Mongoose. The schema specifies the structure and data types of the fields
 in each user document. */
