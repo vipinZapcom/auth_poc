@@ -18,6 +18,7 @@ export type generateTokenUserPayload = {
   email: string;
   role: string;
 };
+// export type UserRoles = keyof typeof USER_ROLES;
 
 // export type PutUserPayload = User;
 

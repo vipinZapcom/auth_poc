@@ -21,7 +21,7 @@ import {
   PutCoursePayload,
 } from '../dtos/courses.dto';
 import {LoggingInterceptor} from '../interceptors/courses.interceptors';
-import {UserInterceptor} from '../interceptors/users.interceptors';
+import {checkRights} from '../interceptors/users.interceptors';
 import {
   createNewCourse,
   deleteCourseById,
@@ -114,6 +114,7 @@ export class CoursesController {
       },
     },
   })
+  @intercept(checkRights(['read_only', 'update_only', 'admin']))
   // This is the corresponding function that will handle the GET all courses request
   async getAllCourses(): Promise<{
     data: (Course | undefined)[];
@@ -192,7 +193,10 @@ export class CoursesController {
       },
     },
   })
-  @intercept(new LoggingInterceptor().fetchCourseByIdInterceptor)
+  @intercept(
+    checkRights(['read_only', 'update_only', 'admin']),
+    new LoggingInterceptor().fetchCourseByIdInterceptor,
+  )
   // This is the corresponding function that will handle the GET course by id request
   async getCourseById(
     @param.path.string('courseId') courseId: string,
@@ -281,7 +285,7 @@ export class CoursesController {
     },
   })
   @intercept(
-    new UserInterceptor().checkCreateRights,
+    checkRights(['admin']),
     new LoggingInterceptor().createCourseInterceptor,
   )
   // This is the corresponding function that will deal with the creation of new course
@@ -389,7 +393,10 @@ export class CoursesController {
       },
     },
   })
-  @intercept(new LoggingInterceptor().patchCourseInterceptor)
+  @intercept(
+    checkRights(['update_only', 'admin']),
+    new LoggingInterceptor().patchCourseInterceptor,
+  )
   // This is the corresponding function that will deal with the updating the course content via PATCH
   async patchGivenCourse(
     @requestBody({
@@ -491,7 +498,10 @@ export class CoursesController {
       },
     },
   })
-  @intercept(new LoggingInterceptor().putCourseInterceptor)
+  @intercept(
+    checkRights(['update_only', 'admin']),
+    new LoggingInterceptor().putCourseInterceptor,
+  )
   // This is the corresponding function that will deal with updating the course content via PUT
   async putGivenCourse(
     @requestBody({
@@ -588,7 +598,10 @@ export class CoursesController {
       },
     },
   })
-  @intercept(new LoggingInterceptor().deleteCourseInterceptor)
+  @intercept(
+    checkRights(['admin']),
+    new LoggingInterceptor().deleteCourseInterceptor,
+  )
   // This is the corresponding function that will deal with deleting the course when the courseId is passed in the url
   async deleteGivenCourse(
     @param.path.string('courseId') courseId: string,
