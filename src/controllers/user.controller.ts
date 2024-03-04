@@ -88,9 +88,6 @@ export class UserController {
   ) {
     // fech user by id
     const response = await fetchUserByEmail(loginPayload.email);
-    console.log(`response`);
-    console.log(response);
-
     // user user is returened user hashed password for verification of token
     const verified = await verifyPassword(
       loginPayload.password,

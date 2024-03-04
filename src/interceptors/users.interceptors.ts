@@ -62,7 +62,6 @@ const validateUser = async (token: string): Promise<any> => {
     'valid token',
     verifiedUser,
   );
-  return verifiedUser;
 };
 
 export const checkRights = (userRole: string[]): Interceptor => {
@@ -91,14 +90,7 @@ export const checkRights = (userRole: string[]): Interceptor => {
     }
     // const user1: <generateTokenUserPayload>(user);
     const user: generateTokenUserPayload = data.data;
-    console.log('WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW');
-
-    console.log(user);
     const userRoleUpperCase: string = user.role.toUpperCase();
-    console.log(userRoleUpperCase);
-    console.log(userRole);
-    // console.log(USER_ROLES[userRoleUpperCase]);
-    console.log('WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW');
 
     if (!userRole.includes(user.role)) {
       // return error message
