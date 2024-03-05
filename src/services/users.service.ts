@@ -32,7 +32,7 @@ export async function createNewUser(
   fileDetails: FileDetails,
 ) {
   try {
-        let errorMessage = '';
+    let errorMessage = '';
     const imageStoredInDbResponse: ResponseDTO =
       await storeNewImage(fileDetails);
     if (imageStoredInDbResponse.statusCode != 200) {
@@ -63,7 +63,7 @@ export async function createNewUser(
     const usersCount = await countAllUsersDb();
     // createNewUserPayload.password = hashedPassword;
     const {firstName, lastName, email} = createNewUserPayload;
-        const createNewUserPayloadWithUserRole: CreateNewUserPayloadWithUserRole = {
+    const createNewUserPayloadWithUserRole: CreateNewUserPayloadWithUserRole = {
       firstName,
       lastName,
       email,
@@ -73,20 +73,16 @@ export async function createNewUser(
         : imageStoredInDbResponse?.data?.imageName,
       role: 'readOnly',
     };
-        // createNewUserPayloadWithUserRole.role = 'readOnly';
+    // createNewUserPayloadWithUserRole.role = 'readOnly';
     const newUser = await createNewUserObjectDb(
       createNewUserPayloadWithUserRole,
       usersCount + 1,
     );
     const createdUserResponseDb = await saveNewUserDb(newUser);
-        if (createdUserResponseDb) {
-      return createResponseObject(
-        errorMessage,
-        201,
-        false,
-        '',
-        createdUserResponseDb,
-      );
+    if (createdUserResponseDb) {
+      const {id, role} = createdUserResponseDb;
+      const returnObj = {id, role};
+      return createResponseObject(errorMessage, 201, false, '', returnObj);
     }
   } catch (error) {
     console.log('Failed creating the user');
