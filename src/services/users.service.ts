@@ -1,4 +1,7 @@
 import * as _ from 'lodash';
+import multer from 'multer';
+import {promisify} from 'util';
+import {FileDetails} from '../dtos/file.dto';
 import {
   CreateNewUserPayload,
   CreateNewUserPayloadWithUserRole,
@@ -12,15 +15,34 @@ import {
   fetchUserByIdDb,
   saveNewUserDb,
 } from '../repositories/users.repository';
+import {ResponseDTO} from '../utils/common.dtos';
+import {createResponseObject} from '../utils/common.service';
 import {createHashedPassword} from '../utils/encryption';
+import {storeNewImage} from './image.service';
+
+const storage = multer.memoryStorage();
+const upload = multer({storage: storage});
+export const uploadFileAsync = promisify(upload.single('file'));
 
 /**
  * Creates a new user.
  */
 export async function createNewUser(
   createNewUserPayload: CreateNewUserPayload,
+  fileDetails: FileDetails,
 ) {
   try {
+        let errorMessage = '';
+    const imageStoredInDbResponse: ResponseDTO =
+      await storeNewImage(fileDetails);
+    if (imageStoredInDbResponse.statusCode != 200) {
+      console.error(imageStoredInDbResponse.error);
+
+      errorMessage = imageStoredInDbResponse.error;
+    } else {
+      console.log('Image uploaded successfully.');
+    }
+
     const password = createNewUserPayload.password;
     const userExistPayload: UserExistsPayload = _.omit(
       createNewUserPayload,
@@ -29,46 +51,46 @@ export async function createNewUser(
 
     const isUserExists = await checkIfTheUserExistsDb(userExistPayload);
     if (isUserExists && isUserExists._id) {
-      return {
-        data: [],
-        error: `The given user already exists.`,
-        isError: false,
-        statusCode: 200,
-      };
+      return createResponseObject(
+        ``,
+        200,
+        false,
+        `The given user already exists.`,
+        null,
+      );
     }
-    const hasdPassword = createHashedPassword(password);
+    const hashedPassword = createHashedPassword(password);
     const usersCount = await countAllUsersDb();
-    // createNewUserPayload.password = hasdPassword;
+    // createNewUserPayload.password = hashedPassword;
     const {firstName, lastName, email} = createNewUserPayload;
-    const createNewUserPayloadWithUserRole: CreateNewUserPayloadWithUserRole = {
+        const createNewUserPayloadWithUserRole: CreateNewUserPayloadWithUserRole = {
       firstName,
       lastName,
       email,
-      password: hasdPassword,
+      password: hashedPassword,
+      imageName: errorMessage.length
+        ? ''
+        : imageStoredInDbResponse?.data?.imageName,
       role: 'readOnly',
     };
-    // createNewUserPayloadWithUserRole.role = 'readOnly';
+        // createNewUserPayloadWithUserRole.role = 'readOnly';
     const newUser = await createNewUserObjectDb(
       createNewUserPayloadWithUserRole,
       usersCount + 1,
     );
     const createdUserResponseDb = await saveNewUserDb(newUser);
-    if (createdUserResponseDb) {
-      return {
-        data: createdUserResponseDb,
-        statusCode: 201,
-        isError: false,
-        error: '',
-      };
+        if (createdUserResponseDb) {
+      return createResponseObject(
+        errorMessage,
+        201,
+        false,
+        '',
+        createdUserResponseDb,
+      );
     }
   } catch (error) {
     console.log('Failed creating the user');
-    return {
-      data: [],
-      statusCode: 500,
-      error: error,
-      isError: true,
-    };
+    return createResponseObject(error, 500, true, '', null);
   }
 }
 
