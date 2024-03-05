@@ -1,54 +1,55 @@
 // Uncomment these imports to begin using these cool features!
 
-import {post, requestBody} from '@loopback/rest';
+import {inject} from '@loopback/core';
+import {
+  Request,
+  Response,
+  RestBindings,
+  post,
+  requestBody,
+} from '@loopback/rest';
 import httpStatus from 'http-status-codes';
 import {generateToken} from '../authentication/authentication';
 import {USER_ENDPOINTS, USER_RESPOSE_MESSAGES} from '../constants';
+import {FileDetails} from '../dtos/file.dto';
 import {CreateNewUserPayload, LoginPayload} from '../dtos/users.dto';
-import {createNewUser, fetchUserByEmail} from '../services/users.service';
+import {
+  createNewUser,
+  fetchUserByEmail,
+  uploadFileAsync,
+} from '../services/users.service';
 import {createResponseObject} from '../utils/common.service';
 import {verifyPassword} from '../utils/encryption';
 // import {inject} from '@loopback/core';
 
 export class UserController {
-  constructor() {}
+  constructor(
+    @inject(RestBindings.Http.REQUEST) private req: Request,
+    @inject(RestBindings.Http.RESPONSE) private res: Response,
+  ) {}
 
   @post(USER_ENDPOINTS.CREATE_USER)
-  async createUser(
-    @requestBody({
-      content: {
-        'application/json': {
-          schema: {
-            type: 'object',
-            properties: {
-              firstName: {
-                type: 'string',
-                description: 'required Field',
-                example: 'alpha',
-              },
-              lastName: {
-                type: 'string',
-                description: 'required Field',
-                example: 'beeta',
-              },
-              email: {
-                type: 'string',
-                description: 'required Field',
-                example: 'alpha@gmail.com',
-              },
-              password: {
-                type: 'string',
-                description: 'required Field',
-                example: 'password',
-              },
-            },
-          },
-        },
-      },
-    })
-    createNewUserPayload: CreateNewUserPayload,
-  ) {
-    return await createNewUser(createNewUserPayload);
+  async createUser() {
+    await uploadFileAsync(this.req, this.res);
+    if (!this.req.file) {
+      throw new Error('No file uploaded');
+    }
+    const {firstName, lastName, password, email} = this.req.body;
+    const createNewUserPayload: CreateNewUserPayload = {
+      firstName,
+      lastName,
+      password,
+      email,
+    };
+    const {originalname, encoding, mimetype, buffer} = this.req.file;
+    const fileDetails: FileDetails = {
+      originalname,
+      encoding,
+      mimetype,
+      buffer,
+    };
+
+    return await createNewUser(createNewUserPayload, fileDetails);
   }
 
   @post(USER_ENDPOINTS.LOGIN_USER)

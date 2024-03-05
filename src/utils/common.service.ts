@@ -21,13 +21,13 @@
  */
 export async function createResponseObject(
   error: any,
-  statusCode: number,
+  statusCode: number | undefined,
   isError: boolean,
   message: string,
   data: any,
 ): Promise<{
   error: any;
-  statusCode: number;
+  statusCode: number | undefined;
   isError: boolean;
   message: string;
   data: any;

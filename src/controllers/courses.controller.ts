@@ -15,7 +15,6 @@ import {
 } from '@loopback/rest';
 import {COURSE_ENDPOINTS} from '../constants';
 import {
-  Course,
   CreateNewCoursePayload,
   PatchCoursePayload,
   PutCoursePayload,
@@ -29,6 +28,7 @@ import {
   fetchCourseById,
   modifyCourseViaPatch as modifyCourse,
 } from '../services/courses.service';
+import {ResponseDTO} from '../utils/common.dtos';
 // This Controller deals with all the CRUD operations( Create Course, Update Course, Delete Course) related to Courses
 export class CoursesController {
   constructor() {}
@@ -116,12 +116,7 @@ export class CoursesController {
   })
   @intercept(checkRights(['read_only', 'update_only', 'admin']))
   // This is the corresponding function that will handle the GET all courses request
-  async getAllCourses(): Promise<{
-    data: (Course | undefined)[];
-    statusCode: number;
-    isError: boolean;
-    error: string;
-  }> {
+  async getAllCourses(): Promise<ResponseDTO> {
     return await fetchAllCourses();
   }
 

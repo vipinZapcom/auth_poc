@@ -4,10 +4,14 @@ export type User = {
   lastName: string;
   email: string;
   password: string;
+  imageName: string;
 };
 
-export type CreateNewUserPayload = Omit<User, 'id'>;
-export type CreateNewUserPayloadWithUserRole = CreateNewUserPayload & {
+export type CreateNewUserPayload = Pick<
+  User,
+  'firstName' | 'lastName' | 'email' | 'password'
+>;
+export type CreateNewUserPayloadWithUserRole = Omit<User, 'id'> & {
   role: string;
 };
 export type UserExistsPayload = Omit<CreateNewUserPayload, 'password'>;

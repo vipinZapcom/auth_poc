@@ -3,7 +3,6 @@ import httpStatus from 'http-status-codes';
 import {DeleteResult} from 'mongodb';
 import {COURSE_SUCCESS_RESPONSE_MESSAGES} from '../constants';
 import {
-  Course,
   CreateNewCoursePayload,
   PatchCoursePayload,
   PutCoursePayload,
@@ -18,17 +17,13 @@ import {
   findCourseByIdAndUpdateDb,
   saveNewCourseDb,
 } from '../repositories/courses.repository';
+import {ResponseDTO} from '../utils/common.dtos';
 import {createResponseObject} from '../utils/common.service';
 
 /**
  * Fetches all courses from the database.
  */
-export async function fetchAllCourses(): Promise<{
-  data: (Course | undefined)[];
-  statusCode: number;
-  isError: boolean;
-  error: string;
-}> {
+export async function fetchAllCourses(): Promise<ResponseDTO> {
   try {
     console.log('Fetching the courses from mongoDB');
     const allCourses = await fetchAllCoursesDb();
@@ -51,12 +46,13 @@ export async function fetchAllCourses(): Promise<{
     );
   } catch (error) {
     console.error('Failed fetching the courses', error);
-    return {
-      error: 'Failed fetching the courses',
-      statusCode: 500,
-      isError: true,
-      data: [],
-    };
+    return await createResponseObject(
+      'Failed fetching the courses',
+      500,
+      true,
+      '',
+      null,
+    );
   }
 }
 
