@@ -9,27 +9,27 @@ import {Users} from '../models/users.model';
  * Fetches all users from the database.
  */
 // export async function fetchAllUsersDb(): Promise<
-//   (Document<
-//     unknown,
-//     {},
-//     {
+  //   (Document<
+    //     unknown,
+    //     {},
+    //     {
 //       id: number;
-//       title: string;
-//       description: string;
-//     }
+      //       title: string;
+      //       description: string;
+    //     }
 //   > & {
-//     id: number;
-//     title: string;
-//     description: string;
-//   } & {
-//     _id: Types.ObjectId;
-//   })[]
+    //     id: number;
+    //     title: string;
+    //     description: string;
+  //   } & {
+    //     _id: Types.ObjectId;
+  //   })[]
 // > {
-//   try {
-//     return await Users.find();
-//   } catch (error) {
-//     throw error;
-//   }
+  //   try {
+    //     return await Users.find();
+  //   } catch (error) {
+    //     throw error;
+  //   }
 // }
 
 /**
@@ -126,12 +126,14 @@ export async function saveNewUserDb(
       firstName: string;
       lastName: string;
       email: string;
+      role: string;
     }
   > & {
     id: number;
     firstName: string;
     lastName: string;
     email: string;
+    role: string;
   } & {
     _id: Types.ObjectId;
   },
@@ -144,12 +146,14 @@ export async function saveNewUserDb(
       firstName: string;
       lastName: string;
       email: string;
+      role: string;
     }
   > & {
     id: number;
     firstName: string;
     lastName: string;
     email: string;
+    role: string;
   } & {
     _id: Types.ObjectId;
   }
