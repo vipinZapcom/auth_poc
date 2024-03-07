@@ -1,16 +1,20 @@
+import httpStatus from 'http-status-codes';
 import * as _ from 'lodash';
 import multer from 'multer';
 import {promisify} from 'util';
+import {USER_RESPOSE_MESSAGES} from '../constants';
 import {FileDetails} from '../dtos/file.dto';
 import {
   CreateNewUserPayload,
   CreateNewUserPayloadWithUserRole,
+  GetUserResponseStructure,
   UserExistsPayload,
 } from '../dtos/users.dto';
 import {
   checkIfTheUserExistsDb,
   countAllUsersDb,
   createNewUserObjectDb,
+  fetchAllUsersDb,
   fetchUserByEmailDB,
   fetchUserByIdDb,
   saveNewUserDb,
@@ -18,7 +22,7 @@ import {
 import {ResponseDTO} from '../utils/common.dtos';
 import {createResponseObject} from '../utils/common.service';
 import {createHashedPassword} from '../utils/encryption';
-import {storeNewImage} from './image.service';
+import {getSignedUrlForImage, storeNewImage} from './image.service';
 
 const storage = multer.memoryStorage();
 const upload = multer({storage: storage});
@@ -108,102 +112,158 @@ export async function checkIfUserExists(userExistsPayload: UserExistsPayload) {
 }
 
 /**
- * Fetches a user by its emai from the database.
+ * Fetches a user by its email from the database.
  */
-export async function fetchUserByEmail(email: string): Promise<{
-  error: string | null;
-  isError: boolean;
-  data: any;
-  statusCode: number;
-}> {
+export async function fetchUserByEmail(email: string): Promise<ResponseDTO> {
   try {
     const user = await fetchUserByEmailDB(email);
-    return {
-      error: user ? null : `user having id ${email} doesn't exists`,
-      isError: false,
-      data: user ? user : [],
-      statusCode: user ? 200 : 404,
-    };
+    if (user) {
+      if (user?.imageName) {
+        const {firstName, lastName, email, role, imageName} = user;
+        const url = await getSignedUrlForImage(imageName);
+        const returnUser = {firstName, lastName, email, role, url};
+
+        return await createResponseObject(
+          '',
+          200,
+          false,
+          USER_RESPOSE_MESSAGES.USERS_FETCHED_SUCCESSFULLY,
+          returnUser,
+        );
+      } else {
+        return await createResponseObject(
+          'Unable to fetch User image',
+          200,
+          false,
+          USER_RESPOSE_MESSAGES.USERS_FETCHED_SUCCESSFULLY,
+          user,
+        );
+      }
+    }
+    return await createResponseObject(
+      `${USER_RESPOSE_MESSAGES.FAILED_FETCHING_USERS} with email id ${email}.`,
+      404,
+      true,
+      '',
+      null,
+    );
   } catch (error) {
-    console.error('Failed fetching the users', error);
-    return {
-      error: 'Failed fetching the users',
-      statusCode: 500,
-      isError: true,
-      data: [],
-    };
+    console.error(USER_RESPOSE_MESSAGES.FAILED_FETCHING_USERS, error);
+    return await createResponseObject(
+      error.message,
+      httpStatus.BAD_GATEWAY,
+      true,
+      '',
+      null,
+    );
   }
 }
 
 /**
  * Fetches a user by its ID from the database.
  */
-export async function fetchUserById(id: number): Promise<{
-  error: string | null;
-  isError: boolean;
-  data: any;
-  statusCode: number;
-}> {
+export async function fetchUserById(id: number): Promise<ResponseDTO> {
   try {
-    const userHavingTheGivenId = await fetchUserByIdDb(id);
-    return {
-      error: userHavingTheGivenId
-        ? null
-        : `user having id ${id} doesn't exists`,
-      isError: false,
-      data: userHavingTheGivenId ? userHavingTheGivenId : [],
-      statusCode: userHavingTheGivenId ? 200 : 404,
-    };
+    const user = await fetchUserByIdDb(id);
+    console.log('WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW');
+    console.log(user);
+
+    console.log('WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW');
+
+    if (user) {
+      if (user?.imageName) {
+        // const user;
+        const {firstName, lastName, email, role, imageName} = user;
+        const url = await getSignedUrlForImage(imageName);
+        const returnUser = {firstName, lastName, email, role, url};
+
+        return await createResponseObject(
+          '',
+          200,
+          false,
+          USER_RESPOSE_MESSAGES.USERS_FETCHED_SUCCESSFULLY,
+          returnUser,
+        );
+      } else {
+        return await createResponseObject(
+          'Unable to fetch User image',
+          200,
+          false,
+          USER_RESPOSE_MESSAGES.USERS_FETCHED_SUCCESSFULLY,
+          user,
+        );
+      }
+    }
+    return await createResponseObject(
+      `${USER_RESPOSE_MESSAGES.FAILED_FETCHING_USERS} with id ${id}.`,
+      404,
+      true,
+      '',
+      null,
+    );
   } catch (error) {
-    console.error('Failed fetching the users', error);
-    return {
-      error: 'Failed fetching the users',
-      statusCode: 500,
-      isError: true,
-      data: [],
-    };
+    console.error(USER_RESPOSE_MESSAGES.FAILED_FETCHING_USERS, error);
+    return await createResponseObject(
+      error.message,
+      httpStatus.BAD_GATEWAY,
+      true,
+      '',
+      null,
+    );
   }
 }
 
-// /**
-//  * Fetches all users from the database.
-//  */
-// export async function fetchAllUsers(): Promise<{
-//   data: (User | undefined)[];
-//   statusCode: number;
-//   isError: boolean;
-//   error: string;
-// }> {
-//   try {
-//     console.log('Fetching the users from mongoDB');
-//     const allUsers = await fetchAllUsersDb();
-//     if (allUsers.length === 0) {
-//       console.log('No users found...Returning');
-//       return await createResponseObject(
-//         null,
-//         httpStatus.NOT_FOUND,
-//         false,
-//         USER_SUCCESS_RESPONSE_MESSAGES.noUsersFound,
-//         [],
-//       );
-//     }
-//     return await createResponseObject(
-//       null,
-//       httpStatus.OK,
-//       false,
-//       USER_SUCCESS_RESPONSE_MESSAGES.usersFetchedSuccessfully,
-//       allUsers,
-//     );
-//   } catch (error) {
-//     console.error('Failed fetching the users', error);
-//     return {
-//       error: 'Failed fetching the users',
-//       statusCode: 500,
-//       isError: true,
-//       data: [],
-//     };
-//   }
-// }
+/**
+ * Fetches all users from the database.
+ */
+export async function fetchAllUsers(): Promise<ResponseDTO> {
+  try {
+    console.log('Fetching the users from mongoDB');
+    const users = await fetchAllUsersDb();
+    if (users.length === 0) {
+      console.log(USER_RESPOSE_MESSAGES.USER_NOT_FOUND);
+      return await createResponseObject(
+        USER_RESPOSE_MESSAGES.USER_NOT_FOUND,
+        httpStatus.NOT_FOUND,
+        false,
+        '',
+        null,
+      );
+    }
+    let allUsers: GetUserResponseStructure[] = [];
+    let errorMessages: string[] = [];
+    for (const user of users) {
+      if (user?.imageName) {
+        const {firstName, lastName, email, role, imageName} = user;
+        const url = await getSignedUrlForImage(imageName);
+        const userWithUrl = {firstName, lastName, email, role, url};
+        allUsers.push(userWithUrl);
+      } else {
+        const id = user.id;
+        errorMessages.push(
+          `${USER_RESPOSE_MESSAGES.FAILED_FETCHING_USERS_IMAGE} id`,
+        );
+      }
+    }
+
+    return await createResponseObject(
+      errorMessages,
+      httpStatus.OK,
+      false,
+      USER_RESPOSE_MESSAGES.USERS_FETCHED_SUCCESSFULLY,
+      allUsers,
+    );
+  } catch (error) {
+    console.error(USER_RESPOSE_MESSAGES.FAILED_FETCHING_USERS, error);
+    return await createResponseObject(
+      error.message,
+      httpStatus.BAD_GATEWAY,
+      true,
+      '',
+      null,
+    );
+  }
+}
 
 // /**
 //  * Modifies a user using PATCH method.

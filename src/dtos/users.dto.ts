@@ -7,6 +7,13 @@ export type User = {
   imageName: string;
 };
 
+export type GetUserResponseStructure = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  role: string;
+  url: string;
+};
 export type CreateNewUserPayload = Pick<
   User,
   'firstName' | 'lastName' | 'email' | 'password'

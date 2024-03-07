@@ -8,46 +8,9 @@ import {Users} from '../models/users.model';
 /**
  * Fetches all users from the database.
  */
-// export async function fetchAllUsersDb(): Promise<
-  //   (Document<
-    //     unknown,
-    //     {},
-    //     {
-//       id: number;
-      //       title: string;
-      //       description: string;
-    //     }
-//   > & {
-    //     id: number;
-    //     title: string;
-    //     description: string;
-  //   } & {
-    //     _id: Types.ObjectId;
-  //   })[]
-// > {
-  //   try {
-    //     return await Users.find();
-  //   } catch (error) {
-    //     throw error;
-  //   }
-// }
-
-/**
- * Fetches a user by its ID from the database.
- */
-export async function fetchUserByIdDb(id: number): Promise<Document<
-  unknown,
-  {},
-  {
-    id: number;
-    title: string;
-    description: string;
-  } & {
-    _id: Types.ObjectId;
-  }
-> | null> {
+export async function fetchAllUsersDb() {
   try {
-    return await Users.findOne({id});
+    return await Users.find();
   } catch (error) {
     throw error;
   }
@@ -56,17 +19,18 @@ export async function fetchUserByIdDb(id: number): Promise<Document<
 /**
  * Fetches a user by its ID from the database.
  */
-export async function fetchUserByEmailDB(email: string): Promise<Document<
-  unknown,
-  {},
-  {
-    id: number;
-    title: string;
-    description: string;
-  } & {
-    _id: Types.ObjectId;
+export async function fetchUserByIdDb(id: number) {
+  try {
+    return await Users.findOne({id});
+  } catch (error) {
+    throw error;
   }
-> | null> {
+}
+
+/**
+ * Fetches a user by its email from the database.
+ */
+export async function fetchUserByEmailDB(email: string) {
   try {
     return await Users.findOne({email});
   } catch (error) {

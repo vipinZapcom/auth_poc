@@ -21,10 +21,17 @@ export const COURSE_SUCCESS_RESPONSE_MESSAGES = {
 export const USER_ENDPOINTS = {
   CREATE_USER: '/signup',
   LOGIN_USER: '/login',
+  GET_USER_BY_ID: '/user/{id}',
+  GET_USER_BY_EMAIL: '/user/',
+  GET_ALL_USERS: '/users/',
 };
 
 export const USER_RESPOSE_MESSAGES = {
   UNAUTHORISED_USER: 'Unable to find this user',
+  USER_NOT_FOUND: 'No user has been found with the given details.',
+  USERS_FETCHED_SUCCESSFULLY: 'Users are fetched successfully.',
+  FAILED_FETCHING_USERS: 'Unable to fetch the given user.',
+  FAILED_FETCHING_USERS_IMAGE: 'Unable to fetch the imsge for userId .',
 };
 
 export const JSON_SECRET_KEY = 'LEARNING_LOOPBACK';
