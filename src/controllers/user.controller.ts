@@ -5,6 +5,8 @@ import {
   Request,
   Response,
   RestBindings,
+  get,
+  param,
   post,
   requestBody,
 } from '@loopback/rest';
@@ -15,9 +17,12 @@ import {FileDetails} from '../dtos/file.dto';
 import {CreateNewUserPayload, LoginPayload} from '../dtos/users.dto';
 import {
   createNewUser,
+  fetchAllUsers,
   fetchUserByEmail,
+  fetchUserById,
   uploadFileAsync,
 } from '../services/users.service';
+import {ResponseDTO} from '../utils/common.dtos';
 import {createResponseObject} from '../utils/common.service';
 import {verifyPassword} from '../utils/encryption';
 // import {inject} from '@loopback/core';
@@ -108,5 +113,22 @@ export class UserController {
       '',
       null,
     );
+  }
+
+  @get(USER_ENDPOINTS.GET_USER_BY_ID)
+  async getUserById(@param.path.number('id') id: number): Promise<ResponseDTO> {
+    return await fetchUserById(id);
+  }
+
+  @get(USER_ENDPOINTS.GET_USER_BY_EMAIL)
+  async getUserByEmail(
+    @param.query.string('email') email: string,
+  ): Promise<ResponseDTO> {
+    return await fetchUserByEmail(email);
+  }
+
+  @get(USER_ENDPOINTS.GET_ALL_USERS)
+  async getAllUsers(): Promise<ResponseDTO> {
+    return await fetchAllUsers();
   }
 }
